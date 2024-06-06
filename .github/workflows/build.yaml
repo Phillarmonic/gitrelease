@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      UPLOAD_URL: ''
 
     strategy:
       matrix:
@@ -30,39 +28,10 @@ jobs:
           mkdir -p dist/${{ matrix.goos }}-${{ matrix.goarch }}
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/${{ matrix.goos }}-${{ matrix.goarch }}/GitRelease
 
-      - name: Get Release
-        id: get_release
-        uses: actions/github-script@v5
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        if: success()
         with:
-          script: |
-            const { data: release } = await github.rest.repos.getReleaseByTag({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag: context.ref.replace('refs/tags/', '')
-            });
-            return release.upload_url;
-
-      - name: Set UPLOAD_URL
-        run: echo "UPLOAD_URL=${{ steps.get_release.outputs.result }}" >> $GITHUB_ENV
-
-      - name: Upload Release Asset (amd64)
-        if: matrix.goarch == 'amd64'
-        uses: actions/upload-release-asset@v1
+          files: dist/${{ matrix.goos }}-${{ matrix.goarch }}/GitRelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: dist/linux-amd64/GitRelease
-          asset_name: gitrelease-linux-amd64
-          asset_content_type: application/octet-stream
-
-      - name: Upload Release Asset (arm64)
-        if: matrix.goarch == 'arm64'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: dist/linux-arm64/GitRelease
-          asset_name: gitrelease-linux-arm64
-          asset_content_type: application/octet-stream
