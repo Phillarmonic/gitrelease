@@ -30,20 +30,20 @@ jobs:
           mkdir -p dist/${{ matrix.goos }}-${{ matrix.goarch }}
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/${{ matrix.goos }}-${{ matrix.goarch }}/GitRelease
 
-      - name: Create Release
-        id: create_release
-        if: matrix.goarch == 'amd64'
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get Release
+        id: get_release
+        uses: actions/github-script@v5
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+          script: |
+            const { data: release } = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: context.ref.replace('refs/tags/', '')
+            });
+            return release.upload_url;
 
       - name: Set UPLOAD_URL
-        run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
+        run: echo "UPLOAD_URL=${{ steps.get_release.outputs.result }}" >> $GITHUB_ENV
 
       - name: Upload Release Asset (amd64)
         if: matrix.goarch == 'amd64'
