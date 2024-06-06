@@ -43,7 +43,6 @@ jobs:
           prerelease: false
 
       - name: Set UPLOAD_URL
-        if: matrix.goarch == 'amd64'
         run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
 
       - name: Upload Release Asset (amd64)
