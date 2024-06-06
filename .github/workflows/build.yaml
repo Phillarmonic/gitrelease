@@ -26,12 +26,12 @@ jobs:
       - name: Build
         run: |
           mkdir -p dist/${{ matrix.goos }}-${{ matrix.goarch }}
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goarch }}
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         if: success()
         with:
-          files: dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goarch }}
+          files: dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
