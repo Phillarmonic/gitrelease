@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      UPLOAD_URL: ''
 
     strategy:
       matrix:
@@ -39,6 +41,8 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+        run: |
+          echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
 
       - name: Upload Release Asset (amd64)
         if: matrix.goarch == 'amd64'
@@ -46,7 +50,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ env.UPLOAD_URL }}
           asset_path: dist/linux-amd64/GitRelease
           asset_name: gitrelease-linux-amd64
           asset_content_type: application/octet-stream
@@ -57,7 +61,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ env.UPLOAD_URL }}
           asset_path: dist/linux-arm64/GitRelease
           asset_name: gitrelease-linux-arm64
           asset_content_type: application/octet-stream
