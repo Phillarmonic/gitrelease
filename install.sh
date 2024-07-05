@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 # Check if the user has curl
 if ! [ -x "$(command -v curl)" ]; then
   echo "Error: curl is not installed. Please install curl before running this script."
