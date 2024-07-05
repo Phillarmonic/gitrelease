@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
-
-# Checks if the is running as sudo
-if [[ $EUID -ne 0 ]]; then
-  echo "This script must be run as root. Please run this command as sudo or root user."
-  exit 1
-fi
+set -e
 
 # Check if the user has curl
 if ! [ -x "$(command -v curl)" ]; then
