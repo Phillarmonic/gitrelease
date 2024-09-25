@@ -2,12 +2,16 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 )
+
+// Version of the application
+const Version = "1.1.0"
 
 // GitRelease: Fetches the latest release version of a GitHub repository
 
@@ -17,12 +21,22 @@ type Release struct {
 }
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: gitrelease <repository>")
-		os.Exit(1)
+	versionFlag := flag.Bool("version", false, "Print the version of the application")
+	flag.Parse()
+
+	if *versionFlag {
+		fmt.Printf("GitRelease version %s\n", Version)
+		return
 	}
 
-	repo := os.Args[1]
+	args := flag.Args()
+	if len(args) < 1 {
+		fmt.Println("Usage: gitrelease <github repo ex: phillarmonic/gitrelease>")
+		fmt.Println("       gitrelease --version")
+		os.Exit(0)
+	}
+
+	repo := args[0]
 	url := fmt.Sprintf("https://api.github.com/repos/%s/releases/latest", repo)
 
 	resp, err := http.Get(url)
