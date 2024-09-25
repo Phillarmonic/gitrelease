@@ -27,7 +27,7 @@ To install GitRelease on Linux systems, follow these steps:
 1. Download the Install Script:
    
    ```bash
-   curl -LO https://github.com/phillarmonic/gitrelease/raw/main/install.sh
+   curl -LO https://github.com/phillarmonic/gitrelease/raw/master/install.sh
    ```
 
 2. Navigate to the Downloaded Directory:
