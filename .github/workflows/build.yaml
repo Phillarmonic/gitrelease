@@ -24,7 +24,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: linux/arm64
+          platforms: linux/arm64,linux/amd64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -41,21 +41,31 @@ jobs:
       - name: Install UPX
         run: sudo apt-get update && sudo apt-get install -y upx
 
-#      - name: Run Go linters
-#        run: |
-#          go fmt ./...
-#          go vet ./...
-#          golint ./...
-#          staticcheck ./...
+      #      - name: Run Go linters
+      #        run: |
+      #          go fmt ./...
+      #          go vet ./...
+      #          golint ./...
+      #          staticcheck ./...
 
       - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
         run: |
           set -ex
           mkdir -p dist/${{ matrix.goos }}-${{ matrix.goarch }}
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags "-s -w" -o dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
+          go build -ldflags "-s -w" -o dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
+
+      - name: Verify Binary is Statically Linked
+        run: |
+          file dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
+          ldd dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
 
       - name: Compress executable with UPX
         run: upx --best dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
+        # Consider commenting out this step if you encounter issues after compression
 
       - name: Test Binary
         run: |
