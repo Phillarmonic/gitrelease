@@ -70,7 +70,7 @@ func main() {
 	if *repoPtr == "" {
 		fmt.Println("GitRelease 2.0.0")
 		fmt.Println("Usage: gitrelease -repo=<owner/repo or namespace/project> [-provider=<github|gitlab|bitbucket>] [-github-token=<token>] [-gitlab-token=<token>] [-bitbucket-token=<token>]")
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	provider := strings.ToLower(*providerPtr)
