@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: debian-bookworm
 
     strategy:
       matrix:
@@ -18,16 +18,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install QEMU User-Mode Emulation
+        run: sudo apt-get update && sudo apt-get install -y qemu-user
+
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
-          platforms: arm64
+          platforms: linux/arm64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
-      - name: Install QEMU User-Mode Emulation
-        run: sudo apt-get update && sudo apt-get install -y qemu-user
 
       - name: Set up Go
         uses: actions/setup-go@v5
