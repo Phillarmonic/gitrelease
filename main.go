@@ -18,8 +18,8 @@ type Release struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: gitrelease <repository>")
-		os.Exit(1)
+		fmt.Println("Usage: gitrelease <github repo ex: phillarmonic/gitrelease>")
+		os.Exit(0)
 	}
 
 	repo := os.Args[1]
