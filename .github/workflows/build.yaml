@@ -121,12 +121,13 @@ jobs:
 
       - name: Test Binary
         run: |
+          set -ex
           chmod +x ./dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
           # Determine the architecture and set the appropriate QEMU command
           if [ "${{ matrix.goarch }}" = "arm64" ]; then
-            qemu-aarch64 ./dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} aptible/supercronic
+            qemu-aarch64 ./dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} -repo=actions/checkout
           else
-            ./dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} aptible/supercronic
+            ./dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} -repo=actions/checkout
           fi
         shell: bash
 
