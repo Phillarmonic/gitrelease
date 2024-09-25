@@ -49,6 +49,17 @@ jobs:
       #          golint ./...
       #          staticcheck ./...
 
+      - name: Install UPX 4.2.4
+        run: |
+          UPX_VERSION=4.2.4
+          echo "Installing UPX for amd64, version $UPX_VERSION"
+          curl -L https://github.com/upx/upx/releases/download/v$UPX_VERSION/upx-$UPX_VERSION-amd64_linux.tar.xz -o upx.tar.xz
+          tar -xf upx.tar.xz
+          sudo mv upx-$UPX_VERSION-amd64_linux/upx /usr/local/bin/
+          rm -rf upx.tar.xz upx-$UPX_VERSION-amd64_linux
+          upx --version
+        shell: bash
+
       - name: Build
         env:
           GOOS: ${{ matrix.goos }}
@@ -65,35 +76,46 @@ jobs:
           # Display the file type
           file dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
           
-          # Run ldd and check its exit status
-          if ldd dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} >/dev/null 2>&1; then
-            echo "❌ Binary is dynamically linked, which is unexpected."
-            exit 1
-          else
+          # Run ldd and capture its output
+          ldd_output=$(ldd dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} 2>&1 || true)
+          
+          # Display the ldd output for debugging purposes
+          echo "$ldd_output"
+          
+          # Check if the output contains "not a dynamic executable"
+          if echo "$ldd_output" | grep -q "not a dynamic executable"; then
             echo "✅ Binary is statically linked."
+          else
+            echo "❌ Binary is dynamically linked or ldd encountered an unexpected error."
+            exit 1
           fi
         shell: bash
 
-
-      # New Step: Compress Binary with UPX Using phillarmonic/upx Docker Image
-      - name: Compress Binary with UPX Using Docker
+      # New Step: Compress Binary with UPX Using Installed UPX
+      - name: Compress Binary with UPX
         run: |
-          # Define variables for easier access
+          # Define the path to the binary
           BINARY_PATH="dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}"
-          ARCH="${{ matrix.goarch }}"
-
-          # Run UPX using the phillarmonic/upx Docker image
-          docker run --rm \
-            -v "${{ github.workspace }}/dist/${{ matrix.goos }}-${{ matrix.goarch }}":/app \
-            phillarmonic/upx \
-            upx --best /app/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
+          echo "Compressing $BINARY_PATH with UPX 4.2.4"
+          
+          # Compress the binary using UPX
+          upx --best "$BINARY_PATH"
+          
+          # Optional: Display the compressed binary size
+          du -h "$BINARY_PATH"
         shell: bash
 
       # Optional: Verify UPX Compression Integrity
       - name: Verify UPX Compression
         run: |
-          file dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
-          upx -t dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
+          BINARY_PATH="dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}"
+          echo "Verifying UPX compression for $BINARY_PATH"
+          
+          # Check the file type
+          file "$BINARY_PATH"
+          
+          # Verify the compressed binary
+          upx -t "$BINARY_PATH"
         shell: bash
 
       - name: Test Binary
