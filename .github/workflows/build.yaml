@@ -38,8 +38,9 @@ jobs:
           cache: true
           cache-dependency-path: go.mod
 
-      - name: Install UPX
-        run: sudo apt-get update && sudo apt-get install -y upx
+      # Removed the existing UPX installation step
+      # - name: Install UPX
+      #   run: sudo apt-get update && sudo apt-get install -y upx
 
       #      - name: Run Go linters
       #        run: |
@@ -63,9 +64,26 @@ jobs:
           file dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
           ldd dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
 
-      - name: Compress executable with UPX
-        run: upx --best dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
-        # Consider commenting out this step if you encounter issues after compression
+      # New Step: Compress Binary with UPX Using phillarmonic/upx Docker Image
+      - name: Compress Binary with UPX Using Docker
+        run: |
+          # Define variables for easier access
+          BINARY_PATH="dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}"
+          ARCH="${{ matrix.goarch }}"
+
+          # Run UPX using the phillarmonic/upx Docker image
+          docker run --rm \
+            -v "${{ github.workspace }}/dist/${{ matrix.goos }}-${{ matrix.goarch }}":/app \
+            phillarmonic/upx \
+            upx --best /app/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
+        shell: bash
+
+      # Optional: Verify UPX Compression Integrity
+      - name: Verify UPX Compression
+        run: |
+          file dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
+          upx --verify dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
+        shell: bash
 
       - name: Test Binary
         run: |
