@@ -64,6 +64,7 @@ jobs:
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
+          # This option ensures no dependency in C Libraries
           CGO_ENABLED: 0
         run: |
           set -ex
