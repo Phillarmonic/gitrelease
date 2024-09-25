@@ -61,8 +61,19 @@ jobs:
 
       - name: Verify Binary is Statically Linked
         run: |
+          set -ex
+          # Display the file type
           file dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
-          ldd dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
+          
+          # Run ldd and check its exit status
+          if ldd dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} >/dev/null 2>&1; then
+            echo "❌ Binary is dynamically linked, which is unexpected."
+            exit 1
+          else
+            echo "✅ Binary is statically linked."
+          fi
+        shell: bash
+
 
       # New Step: Compress Binary with UPX Using phillarmonic/upx Docker Image
       - name: Compress Binary with UPX Using Docker
