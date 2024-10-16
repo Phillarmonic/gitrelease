@@ -6,25 +6,41 @@ if ! [ -x "$(command -v curl)" ]; then
   exit 1
 fi
 
-# Determine if OS architecture is AMD64 or ARM64
+# Determine OS type and architecture
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
 
-if [[ $ARCH == "x86_64" ]]; then
-  ARCH="amd64"
-elif [[ $ARCH == "aarch64" ]]; then
-  ARCH="arm64"
+if [[ $OS == "darwin" ]]; then
+  if [[ $ARCH == "x86_64" ]]; then
+    ARCH="amd64"
+  elif [[ $ARCH == "arm64" ]]; then
+    ARCH="arm64"
+  else
+    echo "Error: Unsupported macOS architecture. gitrelease only supports AMD64 and ARM64 for macOS."
+    exit 1
+  fi
+elif [[ $OS == "linux" ]]; then
+  if [[ $ARCH == "x86_64" ]]; then
+    ARCH="amd64"
+  elif [[ $ARCH == "aarch64" ]]; then
+    ARCH="arm64"
+  else
+    echo "Error: Unsupported Linux architecture. gitrelease only supports AMD64 and ARM64 for Linux."
+    exit 1
+  fi
 else
-  echo "Error: Unsupported architecture. gitrelease only supports AMD64 and ARM64."
+  echo "Error: Unsupported operating system. gitrelease only supports macOS and Linux."
   exit 1
 fi
 
-# Fetch latest tag from GitHub api
+# Fetch latest tag from GitHub API
 LATEST_TAG=$(curl -s "https://api.github.com/repos/Phillarmonic/gitrelease/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
 echo "Latest GitRelease version is $LATEST_TAG. Downloading..."
-# Define the URL and the target path
-URL="https://github.com/Phillarmonic/gitrelease/releases/download/$LATEST_TAG/gitrelease-linux-$ARCH"
 
-TEMP_PATH="/tmp/gitrelease-linux-$ARCH"
+# Define the URL and the target path
+URL="https://github.com/Phillarmonic/gitrelease/releases/download/$LATEST_TAG/gitrelease-$OS-$ARCH"
+
+TEMP_PATH="/tmp/gitrelease-$OS-$ARCH"
 TARGET_PATH="/usr/local/bin/gitrelease"
 
 echo "Downloading $URL..."
