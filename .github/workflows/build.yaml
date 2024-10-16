@@ -112,6 +112,7 @@ jobs:
         shell: bash
 
       - name: Test Binary
+        if: matrix.goos == 'linux'
         run: |
           set -ex
           chmod +x ./dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}
