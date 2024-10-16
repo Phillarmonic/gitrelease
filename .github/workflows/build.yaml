@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        goos: [linux]
+        goos: [linux, darwin]
         goarch: [amd64, arm64]
 
     steps:
@@ -24,12 +24,12 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: linux/arm64,linux/amd64
+          platforms: linux/arm64,linux/amd64,darwin/arm64,darwin/amd64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,darwin/amd64,darwin/arm64
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -38,18 +38,7 @@ jobs:
           cache: true
           cache-dependency-path: go.mod
 
-      # Removed the existing UPX installation step
-      # - name: Install UPX
-      #   run: sudo apt-get update && sudo apt-get install -y upx
-
-      #      - name: Run Go linters
-      #        run: |
-      #          go fmt ./...
-      #          go vet ./...
-      #          golint ./...
-      #          staticcheck ./...
-
-      - name: Install UPX 4.2.4
+      - name: Install UPX v4
         run: |
           UPX_VERSION=4.2.4
           echo "Installing UPX for amd64, version $UPX_VERSION"
@@ -92,7 +81,7 @@ jobs:
           fi
         shell: bash
 
-      # New Step: Compress Binary with UPX Using Installed UPX
+      # Compress Binary with UPX Using Installed UPX
       - name: Compress Binary with UPX
         run: |
           # Define the path to the binary
@@ -106,7 +95,7 @@ jobs:
           du -h "$BINARY_PATH"
         shell: bash
 
-      # Optional: Verify UPX Compression Integrity
+      # Verify UPX Compression Integrity
       - name: Verify UPX Compression
         run: |
           BINARY_PATH="dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}"
