@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 # Capivaras
 
 # Check if the user has curl
