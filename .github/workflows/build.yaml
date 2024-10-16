@@ -1,11 +1,6 @@
 name: Build and Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version'
-        required: true
   push:
     tags:
       - 'v*.*.*'
@@ -43,7 +38,8 @@ jobs:
           cache: true
           cache-dependency-path: go.mod
 
-      - name: Install UPX v4
+      - name: Install UPX v4 (On Tux only)
+        if: matrix.goos == 'linux'
         run: |
           UPX_VERSION=4.2.4
           echo "Installing UPX for amd64, version $UPX_VERSION"
@@ -88,6 +84,7 @@ jobs:
 
       # Compress Binary with UPX Using Installed UPX
       - name: Compress Binary with UPX
+        if: matrix.goos == 'linux'
         run: |
           # Define the path to the binary
           BINARY_PATH="dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}"
@@ -102,8 +99,9 @@ jobs:
 
       # Verify UPX Compression Integrity
       - name: Verify UPX Compression
+        if: matrix.goos == 'linux'
         run: |
-          BINARY_PATH="dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}"
+          BINARY_PATH="dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goos }}-${{ matrix.goarch }}"
           echo "Verifying UPX compression for $BINARY_PATH"
           
           # Check the file type
