@@ -101,7 +101,7 @@ jobs:
       - name: Verify UPX Compression
         if: matrix.goos == 'linux'
         run: |
-          BINARY_PATH="dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goos }}-${{ matrix.goarch }}"
+          BINARY_PATH="dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}"
           echo "Verifying UPX compression for $BINARY_PATH"
           
           # Check the file type
