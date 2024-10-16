@@ -68,7 +68,8 @@ func main() {
 	flag.Parse()
 
 	if *repoPtr == "" {
-		fmt.Println("GitRelease 2.0.0")
+		fmt.Println("GitRelease 2.1.0")
+		fmt.Println("🍏🐧 now for Darwinians and Tuxedos :)")
 		fmt.Println("Usage: gitrelease -repo=<owner/repo or namespace/project> [-provider=<github|gitlab|bitbucket>] [-github-token=<token>] [-gitlab-token=<token>] [-bitbucket-token=<token>]")
 		os.Exit(1)
 	}
