@@ -34,7 +34,11 @@ else
 fi
 
 # Fetch latest tag from GitHub API
-LATEST_TAG=$(curl -s "https://api.github.com/repos/Phillarmonic/gitrelease/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+LATEST_TAG=$(curl -s "https://api.github.com/repos/Phillarmonic/gitrelease/releases/latest" | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p')
+if [ -z "$LATEST_TAG" ]; then
+  echo "Error: Unable to fetch the latest release tag. Please check your internet connection and try again."
+  exit 1
+fi
 echo "Latest GitRelease version is $LATEST_TAG. Downloading..."
 
 # Define the URL and the target path
@@ -46,15 +50,25 @@ TARGET_PATH="/usr/local/bin/gitrelease"
 echo "Downloading $URL..."
 
 # Download the file to a temporary location
-curl -L "$URL" -o "$TEMP_PATH"
+if ! curl -L -o "$TEMP_PATH" "$URL"; then
+  echo "Error: Failed to download gitrelease. Please check your internet connection and try again."
+  exit 1
+fi
 
 # Move the file to the target path and make it executable
 echo "Installing gitrelease..."
-sudo mv "$TEMP_PATH" $TARGET_PATH
-sudo chmod +x $TARGET_PATH
+if ! sudo mv "$TEMP_PATH" "$TARGET_PATH"; then
+  echo "Error: Failed to move gitrelease to $TARGET_PATH. Do you have the necessary permissions?"
+  exit 1
+fi
+
+if ! sudo chmod +x "$TARGET_PATH"; then
+  echo "Error: Failed to make gitrelease executable. Do you have the necessary permissions?"
+  exit 1
+fi
 
 # Verify the installation
-if [[ -x $TARGET_PATH ]]; then
+if [[ -x "$TARGET_PATH" ]]; then
   echo "gitrelease has been successfully installed and made executable."
 else
   echo "There was an error installing gitrelease."
