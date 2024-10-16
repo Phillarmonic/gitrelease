@@ -16,39 +16,27 @@ GitRelease is a versatile command-line tool designed to fetch the latest release
 
 ### Requirements
 
-- **Operating System**: Linux (AMD64 or ARM64 architecture)
+- **Operating Systems**: 
+  - Linux (AMD64 or ARM64 architecture)
+  - MacOS (Intel or any of the new ARM64 chips)
 - **Dependencies**:
   - `curl` must be installed
 
-### Linux Systems
+### Linux/Mac Systems
 
 To install GitRelease on Linux systems, follow these steps:
 
-1. Download the Install Script:
+1. Run this:
    
    ```bash
-   curl -LO https://github.com/phillarmonic/gitrelease/raw/master/install.sh
+   curl -L https://bit.ly/gitrelease | bash
    ```
 
-2. Navigate to the Downloaded Directory:
-   
-   ```bash
-   cd /path/to/downloaded/script
-   ```
+2. The script will automatically check for dependencies, download the latest version of GitRelease, and install it to `/usr/local/bin`.
 
-3. Make the Script Executable:
-   
-   ```bash
-   chmod +x install.sh
-   ```
+If you're curious, the shortened url is:
 
-4. Execute the Install Script:
-   
-   ```bash
-   sudo ./install.sh
-   ```
-
-The script will automatically check for dependencies, download the latest version of GitRelease, and install it to `/usr/local/bin`.
+https://raw.githubusercontent.com/Phillarmonic/gitrelease/refs/heads/master/install.sh
 
 ## Usage
 
@@ -100,44 +88,34 @@ Alternatively, you can provide authentication tokens via environment variables:
 1. Fetch Latest Release from GitHub (Default Provider):
    
    ```bash
-   gitrelease -repo=golang/go
-   # Expected Output: go1.21.0 (or the latest tag)
+   gitrelease -repo=docker/compose
+   # Expected Output: v2.29.7 (the latest tag as of today 16/10/24)
    ```
 
 2. Fetch Latest Release from GitLab:
    
    ```bash
    gitrelease -repo=gitlab-org/gitlab -provider=gitlab
-   # Expected Output: 16.5.0 (or the latest tag)
+   # Expected Output: v17.4.0-ee (the latest tag as of today 16/10/24)
    ```
 
-3. Fetch Latest Tag from Bitbucket:
-   
-   ```bash
-   gitrelease -repo=atlassian/python-bitbucket -provider=bitbucket
-   # Expected Output: v2.0.0 (or the latest tag)
-   ```
-
-4. Fetch Latest Release from a Private GitHub Repository Using a Token:
+3. Fetch Latest Release from a Private GitHub Repository Using a Token:
    
    ```bash
    gitrelease -repo=privateowner/private-repo -github-token=your_github_token
-   # Expected Output: v1.0.0 (or the latest tag)
    ```
 
-5. Fetch Latest Release from a Private GitLab Repository Using Environment Variable:
+4. Fetch Latest Release from a Private GitLab Repository Using Environment Variable:
    
    ```bash
    export GITLAB_TOKEN=your_gitlab_token
    gitrelease -repo=private/namespace/project -provider=gitlab
-   # Expected Output: v2.0.0 (or the latest tag)
    ```
 
-6. Fetch Latest Tag from a Private Bitbucket Repository Using Flags:
+5. Fetch Latest Tag from a Private Bitbucket Repository Using Flags:
    
    ```bash
    gitrelease -repo=privateowner/private-repo -provider=bitbucket -bitbucket-token=your_bitbucket_token
-   # Expected Output: v1.0.0 (or the latest tag)
    ```
 
 ## Authentication Token Usage
