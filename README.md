@@ -40,38 +40,41 @@ https://raw.githubusercontent.com/Phillarmonic/gitrelease/refs/heads/master/inst
 
 ## Usage
 
-GitRelease provides a straightforward command-line interface to fetch the latest release tags from supported Git providers. Below are the usage instructions and examples.
+### Fetching Latest Release by Version Prefix
 
-### Basic Command
+In addition to fetching the latest release, GitRelease now supports fetching the latest tag that matches a specific version prefix. This is particularly useful for projects that follow semantic versioning, like the PHP repository.
+
+To fetch the latest tag matching a version prefix, use the `-version` flag:
 
 ```bash
-gitrelease -repo=<owner/repo>
-# Example gitrelease -repo=actions/checkout
-# will fetch the latest version of the checkout action repo on GitHub.
-# Currently it should return v4.2.0. This can change in the future.
+gitrelease -repo=<owner/repo> -provider=<github|gitlab|bitbucket> -version=<version_prefix>
 ```
 
-- `-repo`: Specifies the repository in the format `owner/repo` for GitHub and Bitbucket or `namespace/project` for GitLab.
+For example, to get the latest PHP 8.3 release:
 
-### Optional Flags
+```bash
+gitrelease --repo=php/php-src --provider=github --version=8.3
+```
 
-- `-provider`: Specifies the Git provider. Supported values are `github`, `gitlab`, and `bitbucket`. Defaults to `github` if not specified.
-  
-  ```bash
-  -provider=<github|gitlab|bitbucket>
-  ```
+This will return the latest tag that starts with `php-8.3`, such as `php-8.3.14`.
 
-- Authentication Flags (Optional):
-  
-  - `-github-token`: GitHub Personal Access Token.
-  - `-gitlab-token`: GitLab Personal Access Token.
-  - `-bitbucket-token`: Bitbucket App Password.
-  
-  ```bash
-  -github-token=<your_github_token>
-  -gitlab-token=<your_gitlab_token>
-  -bitbucket-token=<your_bitbucket_token>
-  ```
+The version prefix should be specified without any leading `v` character. GitRelease will automatically handle tags that start with `v` (e.g., `v8.2.26`) as well as those that don't (e.g., `8.2.26`).
+
+### Authentication Flags
+
+The documentation for authentication flags remains the same:
+
+- `-github-token`: GitHub Personal Access Token.
+- `-gitlab-token`: GitLab Personal Access Token.
+- `-bitbucket-token`: Bitbucket App Password.
+
+Alternatively, you can provide the authentication tokens via environment variables:
+
+- `GITHUB_TOKEN`
+- `GITLAB_TOKEN`
+- `BITBUCKET_TOKEN`
+
+**Note**: Command-line flags take precedence over environment variables if both are provided.
 
 ### Environment Variables
 
