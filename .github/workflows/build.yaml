@@ -119,8 +119,10 @@ jobs:
           # Determine the architecture and set the appropriate QEMU command
           if [ "${{ matrix.goarch }}" = "arm64" ]; then
             qemu-aarch64 ./dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} -repo=actions/checkout
+            qemu-aarch64 ./dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} --repo=php/php-src --provider=github --version=8.3
           else
             ./dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} -repo=actions/checkout
+            ./dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }} --repo=php/php-src --provider=github --version=8.3
           fi
         shell: bash
 
