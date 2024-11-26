@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
+
 # Capivaras
+echo "Installing/Updating GitRelease..."
 
 # Check if the user has curl
 if ! [ -x "$(command -v curl)" ]; then
