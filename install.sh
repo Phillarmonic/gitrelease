@@ -36,11 +36,8 @@ else
 fi
 
 # Fetch latest tag from GitHub API
-LATEST_TAG=$(curl -s "https://api.github.com/repos/Phillarmonic/gitrelease/releases/latest" | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p')
-if [ -z "$LATEST_TAG" ]; then
-  echo "Error: Unable to fetch the latest release tag. Please check your internet connection and try again."
-  exit 1
-fi
+LATEST_TAG=v2.2.1
+
 echo "Latest GitRelease version is $LATEST_TAG. Downloading..."
 
 # Define the URL and the target path
