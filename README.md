@@ -40,6 +40,17 @@ https://raw.githubusercontent.com/Phillarmonic/gitrelease/refs/heads/master/inst
 
 ## Usage
 
+GitRelease provides a straightforward command-line interface to fetch the latest release tags from supported Git providers. Below are the usage instructions and examples.  
+
+### Basic Command
+
+```bash
+gitrelease -repo=<owner/repo>  
+# Example gitrelease -repo=actions/checkout  
+# will fetch the latest version of the checkout action repo on GitHub.  
+# Currently it should return v4.2.0. This version can change in the future.  
+```
+
 ### Fetching Latest Release by Version Prefix
 
 In addition to fetching the latest release, GitRelease now supports fetching the latest tag that matches a specific version prefix. This is particularly useful for projects that follow semantic versioning, like the PHP repository.
