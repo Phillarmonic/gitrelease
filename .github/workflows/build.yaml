@@ -39,6 +39,9 @@ jobs:
           cache: true
           cache-dependency-path: go.mod
 
+      - name: Install dependencies
+        run: go mod download
+
       - name: Install UPX v4 (On Tux only)
         if: matrix.goos == 'linux'
         run: |
