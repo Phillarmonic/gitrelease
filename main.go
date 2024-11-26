@@ -75,16 +75,17 @@ func main() {
 	// Command-line flags
 	repoPtr := flag.String("repo", "", "Repository in the format 'owner/repo' or 'namespace/project' for GitLab")
 	providerPtr := flag.String("provider", "github", "Provider: github, gitlab, bitbucket (default: github)")
-	versionPtr := flag.String("version", "", "Specify the version prefix (e.g., '8.2') to fetch the latest tag matching that version")
+	versionPtr := flag.String("version", "", "Specify the version prefix (e.g., '8.3') to fetch the latest tag matching that version")
 	githubTokenPtr := flag.String("github-token", "", "GitHub Personal Access Token (optional)")
 	gitlabTokenPtr := flag.String("gitlab-token", "", "GitLab Personal Access Token (optional)")
 	bitbucketTokenPtr := flag.String("bitbucket-token", "", "Bitbucket App Password (optional)")
+	stripPrefixPtr := flag.String("strip-prefix", "", "Prefix to strip from the output tag (optional)")
 
 	flag.Parse()
 
 	if *repoPtr == "" {
 		// Define the program version
-		const programVersion = "GitRelease 2.2.0"
+		const programVersion = "GitRelease 2.2.1"
 		fmt.Println(programVersion)
 		fmt.Println("🍏🐧 Now for Darwinians and Tuxedos :)")
 		fmt.Println("\nUsage:")
@@ -97,6 +98,7 @@ func main() {
 	provider := strings.ToLower(*providerPtr)
 	repo := *repoPtr
 	versionPrefix := *versionPtr
+	stripPrefix := *stripPrefixPtr
 
 	var tag string
 	var err error
@@ -128,6 +130,10 @@ func main() {
 
 	if err != nil {
 		log.Fatalf("Error fetching latest release/tag: %v", err)
+	}
+
+	if stripPrefix != "" {
+		tag = strings.TrimPrefix(tag, stripPrefix)
 	}
 
 	fmt.Println(tag)
