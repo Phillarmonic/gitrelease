@@ -1,5 +1,5 @@
 # GitRelease
-
+![GitHub all releases](https://img.shields.io/github/downloads/Phillarmonic/gitrelease/total)
 ## Overview
 
 GitRelease is a versatile command-line tool designed to fetch the latest release version of repositories across multiple Git platforms with ease. It simplifies the process of staying updated with the latest versions of your favorite projects hosted on GitHub, GitLab, and Bitbucket. With support for token-based authentication, GitRelease enables you to access both public and private repositories seamlessly.
