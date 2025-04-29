@@ -92,7 +92,7 @@ jobs:
         run: |
           # Define the path to the binary
           BINARY_PATH="dist/${{ matrix.goos }}-${{ matrix.goarch }}/gitrelease-${{ matrix.goos }}-${{ matrix.goarch }}"
-          echo "Compressing $BINARY_PATH with UPX 4.2.4"
+          echo "Compressing $BINARY_PATH with UPX 5.0.0"
           
           # Compress the binary using UPX
           upx --best "$BINARY_PATH"
