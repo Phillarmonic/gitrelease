@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
-      - name: Install UPX v4 (On Tux only)
+      - name: Install UPX v5 (On Tux only)
         if: matrix.goos == 'linux'
         run: |
           UPX_VERSION=5.0.0
@@ -132,7 +132,7 @@ jobs:
 
       - name: Upload build artifacts (on failure)
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-logs
           path: dist/${{ matrix.goos }}-${{ matrix.goarch }}
