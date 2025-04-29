@@ -45,7 +45,7 @@ jobs:
       - name: Install UPX v4 (On Tux only)
         if: matrix.goos == 'linux'
         run: |
-          UPX_VERSION=4.2.4
+          UPX_VERSION=5.0.0
           echo "Installing UPX for amd64, version $UPX_VERSION"
           curl -L https://github.com/upx/upx/releases/download/v$UPX_VERSION/upx-$UPX_VERSION-amd64_linux.tar.xz -o upx.tar.xz
           tar -xf upx.tar.xz
